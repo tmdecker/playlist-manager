@@ -14,7 +14,7 @@ def create_spotify_session() -> requests.Session:
     session = requests.Session()
 
     # Set descriptive User-Agent header for API identification
-    user_agent = "PlaylistManager/1.0 (Playlist Management Web App; github.com/tmdecker)"
+    user_agent = "playlist-manager (Playlist Management Web App; github.com/tmdecker)"
     session.headers.update({
         "User-Agent": user_agent
     })

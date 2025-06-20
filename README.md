@@ -29,7 +29,7 @@ A modern web application for managing and organizing Spotify playlists with powe
 1. **Clone the repository**
    ```bash
    git clone <repository-url>
-   cd spotify-tools
+   cd playlist-manager
    ```
 
 2. **Install dependencies**
