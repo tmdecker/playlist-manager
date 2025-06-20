@@ -342,7 +342,7 @@ wheels = [
 ]
 
 [[package]]
-name = "spotify-tools"
+name = "playlist-manager"
 version = "0.1.0"
 source = { virtual = "." }
 dependencies = [
