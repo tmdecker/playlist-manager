@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    <div class="icon" style="color: #ff6b6b; margin-bottom: 1rem;">
+        <span class="material-symbols-outlined" style="font-size: 3rem;">error</span>
+    </div>
+    <h2 style="margin-bottom: 1rem; color: #ff6b6b;">Authentication Error</h2>
+    <p style="color: #b3b3b3; margin-bottom: 2rem;">
+        {{ error }}
+    </p>
+    <a href="{{ url_for('index') }}" class="btn">Return to Home</a>
+</div>
+{% endblock %}

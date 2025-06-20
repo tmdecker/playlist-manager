@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+
+{% block title %}Privacy Policy - Spotify Tools{% endblock %}
+
+{% block content %}
+<div class="card">
+    <a href="{{ url_for('index') }}" class="back-button">
+        <span class="material-symbols-outlined">arrow_back</span>
+        Back to Home
+    </a>
+    
+    <h2 style="margin-bottom: 2rem; color: #1DB954;">Privacy Policy</h2>
+    
+    <div style="color: #b3b3b3; line-height: 1.8; max-width: 800px;">
+        <p style="margin-bottom: 1.5rem; font-size: 0.875rem; color: #999;">
+            <strong>Last updated:</strong> {{ current_date }}
+        </p>
+        
+        <h3 style="color: #fff; margin: 2rem 0 1rem 0;">Information We Collect</h3>
+        <p style="margin-bottom: 1rem;">
+            When you use Spotify Tools, we collect the following information through the Spotify Web API:
+        </p>
+        <ul style="margin-bottom: 1.5rem; padding-left: 2rem;">
+            <li style="margin-bottom: 0.5rem;">Your Spotify user profile information (display name, email)</li>
+            <li style="margin-bottom: 0.5rem;">Access to your playlists for reading and modification</li>
+            <li style="margin-bottom: 0.5rem;">Track metadata (artist names, song titles, release dates, album information)</li>
+        </ul>
+        
+        <h3 style="color: #fff; margin: 2rem 0 1rem 0;">How We Use Your Information</h3>
+        <p style="margin-bottom: 1rem;">
+            We use your information solely to provide our playlist management services:
+        </p>
+        <ul style="margin-bottom: 1.5rem; padding-left: 2rem;">
+            <li style="margin-bottom: 0.5rem;">Sorting playlists by release date</li>
+            <li style="margin-bottom: 0.5rem;">Removing duplicate tracks from playlists</li>
+            <li style="margin-bottom: 0.5rem;">Authenticating your identity with Spotify</li>
+        </ul>
+        
+        <h3 style="color: #fff; margin: 2rem 0 1rem 0;">Data Storage and Security</h3>
+        <ul style="margin-bottom: 1.5rem; padding-left: 2rem;">
+            <li style="margin-bottom: 0.5rem;">We do not permanently store your playlist data or track information</li>
+            <li style="margin-bottom: 0.5rem;">Authentication tokens are stored temporarily in secure session storage</li>
+            <li style="margin-bottom: 0.5rem;">All data processing happens in real-time and is not retained after use</li>
+            <li style="margin-bottom: 0.5rem;">We use HTTPS encryption for all data transmission</li>
+        </ul>
+        
+        <h3 style="color: #fff; margin: 2rem 0 1rem 0;">Data Sharing</h3>
+        <p style="margin-bottom: 1.5rem;">
+            We do not share, sell, or distribute your personal information or music data to third parties. 
+            Your data is only used to communicate with Spotify's servers on your behalf to perform the requested actions.
+        </p>
+        
+        <h3 style="color: #fff; margin: 2rem 0 1rem 0;">Prohibited Uses</h3>
+        <p style="margin-bottom: 1rem;">
+            This application explicitly prohibits:
+        </p>
+        <ul style="margin-bottom: 1.5rem; padding-left: 2rem;">
+            <li style="margin-bottom: 0.5rem;">Using data for AI training or machine learning purposes</li>
+            <li style="margin-bottom: 0.5rem;">Downloading or storing copyrighted content</li>
+            <li style="margin-bottom: 0.5rem;">Bulk data extraction or scraping</li>
+            <li style="margin-bottom: 0.5rem;">Any commercial use of user data</li>
+        </ul>
+        
+        <h3 style="color: #fff; margin: 2rem 0 1rem 0;">Your Rights</h3>
+        <p style="margin-bottom: 1rem;">
+            You have the right to:
+        </p>
+        <ul style="margin-bottom: 1.5rem; padding-left: 2rem;">
+            <li style="margin-bottom: 0.5rem;">Revoke access to your Spotify account at any time through your Spotify settings</li>
+            <li style="margin-bottom: 0.5rem;">Request information about what data we access</li>
+            <li style="margin-bottom: 0.5rem;">Log out and clear your session data at any time</li>
+        </ul>
+        
+        <h3 style="color: #fff; margin: 2rem 0 1rem 0;">Spotify Web API</h3>
+        <p style="margin-bottom: 1.5rem;">
+            This application uses the Spotify Web API and is subject to Spotify's terms of service and privacy policy. 
+            We are not affiliated with, endorsed by, or sponsored by Spotify AB or any of its subsidiaries.
+        </p>
+        
+        <h3 style="color: #fff; margin: 2rem 0 1rem 0;">Contact Information</h3>
+        <p style="margin-bottom: 1.5rem;">
+            If you have questions about this privacy policy or our data practices, please contact us through our GitHub repository.
+        </p>
+        
+        <p style="margin-top: 2rem; padding-top: 2rem; border-top: 1px solid #282828; font-size: 0.875rem;">
+            <strong>Note:</strong> This privacy policy applies to this specific Spotify Tools application. 
+            Your use of Spotify itself is governed by Spotify's own privacy policy and terms of service.
+        </p>
+    </div>
+</div>
+{% endblock %}

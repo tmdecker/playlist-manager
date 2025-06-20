@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="card">
+    {% if not user %}
+        <h2 style="margin-bottom: 1rem;">Welcome to Spotify Tools</h2>
+        <p style="color: #b3b3b3; margin-bottom: 2rem;">
+            A collection of utilities to manage and organize your Spotify playlists.
+        </p>
+        <p style="color: #b3b3b3; margin-bottom: 2rem;">
+            To get started, you'll need to authenticate with your Spotify account.
+        </p>
+        <a href="{{ url_for('consent') }}" class="btn">Connect with Spotify</a>
+    {% else %}
+        <h2 style="margin-bottom: 1rem;">Welcome back, {{ user.display_name or 'User' }}!</h2>
+        <p style="color: #b3b3b3; margin-bottom: 2rem;">
+            Select a tool below to get started:
+        </p>
+        
+        <div class="feature-grid">
+            <a href="{{ url_for('sort_playlist_page') }}" class="feature-card" style="text-decoration: none;">
+                <div class="icon">
+                    <span class="material-symbols-outlined">reorder</span>
+                </div>
+                <h3>Sort Playlist by Release Date</h3>
+                <p>Reorder tracks in your playlist by their release date</p>
+            </a>
+            
+            <a href="{{ url_for('remove_duplicates_page') }}" class="feature-card" style="text-decoration: none;">
+                <div class="icon">
+                    <span class="material-symbols-outlined">delete_sweep</span>
+                </div>
+                <h3>Remove Duplicate Tracks</h3>
+                <p>Remove duplicate songs from your playlist, keeping the first occurrence</p>
+            </a>
+        </div>
+    {% endif %}
+</div>
+
+{% if not user %}
+<div class="card">
+    <h3 style="margin-bottom: 1rem;">Features</h3>
+    <div style="color: #b3b3b3; line-height: 1.8;">
+        <p style="margin-bottom: 1rem;">
+            <strong style="color: #1DB954;">Sort Playlist by Release Date:</strong><br>
+            Automatically reorder tracks in your playlists by their release date, newest or oldest first.
+        </p>
+        <p style="margin-bottom: 1rem;">
+            <strong style="color: #1DB954;">Remove Duplicate Tracks:</strong><br>
+            Clean up your playlists by removing duplicate songs while preserving the original track order.
+        </p>
+        <p style="margin-bottom: 0;">
+            Connect with your Spotify account above to get started!
+        </p>
+    </div>
+</div>
+{% endif %}
+{% endblock %}

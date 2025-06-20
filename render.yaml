@@ -1,0 +1,67 @@
+services:
+  # Web service for the Playlist Manager application
+  - type: web
+    name: playlist-manager
+    runtime: python
+    plan: free  # Change to 'starter' or higher for production
+    
+    # Build configuration
+    buildCommand: pip install -e .
+    startCommand: python web_app.py
+    
+    # Health check configuration
+    healthCheckPath: /health
+    
+    # Environment variables
+    envVars:
+      # Python version
+      - key: PYTHON_VERSION
+        value: 3.12
+      
+      # Flask configuration
+      - key: FLASK_ENV
+        value: production
+      
+      # HTTPS enforcement
+      - key: HTTPS_ONLY
+        value: true
+      
+      # Session configuration
+      - key: SESSION_TYPE
+        value: redis
+      
+      # Render environment indicator
+      - key: RENDER
+        value: true
+      
+      # Port configuration (Render sets this automatically)
+      # - key: PORT
+      #   value: 10000
+      
+      # These must be set in Render dashboard as secrets:
+      # - SPOTIFY_CLIENT_ID
+      # - SPOTIFY_CLIENT_SECRET
+      # - FLASK_SECRET_KEY
+      # - REDIS_URL (from Redis add-on or external service)
+      # - REDIRECT_URI (https://your-app-name.onrender.com/callback)
+    
+    # Auto-deploy from GitHub
+    autoDeploy: true  # Automatically deploy on push to main branch
+    
+    # Build filters (optional)
+    # buildFilter:
+    #   paths:
+    #     - "**/*.py"
+    #     - "pyproject.toml"
+    #     - "requirements.txt"
+    #   ignoredPaths:
+    #     - "docs/**"
+    #     - "tests/**"
+    #     - "*.md"
+
+# Uncomment to add Redis database
+# databases:
+#   - name: playlist-manager-redis
+#     plan: free  # Change to 'starter' or higher for production
+#     type: redis
+#     ipAllowList: []  # Allow connections from all Render services

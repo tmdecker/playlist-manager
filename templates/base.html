@@ -1,0 +1,368 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Spotify Tools{% endblock %}</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #000000;
+            color: #fff;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        
+        .navbar {
+            background-color: #000;
+            padding: 1rem 2rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+        }
+        
+        .navbar h1 {
+            color: #1DB954;
+            font-size: 1.5rem;
+        }
+        
+        .navbar .user-info {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+        
+        .navbar .user-info span {
+            color: #b3b3b3;
+            font-size: 0.9rem;
+        }
+        
+        .btn {
+            background-color: #1DB954;
+            color: white;
+            border: none;
+            padding: 0.75rem 2rem;
+            border-radius: 500px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-block;
+            transition: all 0.3s ease;
+        }
+        
+        .btn:hover {
+            background-color: #1ED760;
+            transform: scale(1.04);
+        }
+        
+        .btn-secondary {
+            background-color: #282828;
+            color: #fff;
+        }
+        
+        .btn-secondary:hover {
+            background-color: #404040;
+        }
+        
+        .btn-small {
+            padding: 0.5rem 1rem;
+            font-size: 0.875rem;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 2rem;
+            flex: 1;
+        }
+        
+        .card {
+            background-color: #282828;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 6px rgba(0,0,0,0.1);
+        }
+        
+        .feature-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+        
+        .feature-card {
+            background-color: #1a1a1a;
+            border-radius: 16px;
+            padding: 2rem;
+            text-align: center;
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
+            cursor: pointer;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 16px rgba(0,0,0,0.2);
+        }
+        
+        .feature-card .icon {
+            font-size: 3rem;
+            margin-bottom: 1rem;
+        }
+        
+        .material-symbols-outlined {
+            font-size: 3rem;
+            color: #e3e3e3;
+        }
+        
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #b3b3b3;
+            text-decoration: none;
+            margin-bottom: 1.5rem;
+            transition: color 0.3s ease;
+        }
+        
+        .back-button:hover {
+            color: #fff;
+        }
+        
+        .back-button .material-symbols-outlined {
+            font-size: 1.25rem;
+        }
+        
+        .feature-card h3 {
+            color: #fff;
+            margin-bottom: 0.5rem;
+        }
+        
+        .feature-card p {
+            color: #b3b3b3;
+            font-size: 0.9rem;
+        }
+        
+        .alert {
+            padding: 1rem;
+            border-radius: 4px;
+            margin-bottom: 1rem;
+        }
+        
+        .alert-success {
+            background-color: #1DB954;
+            color: white;
+        }
+        
+        .alert-error {
+            background-color: #e22134;
+            color: white;
+        }
+        
+        .form-group {
+            margin-bottom: 1.5rem;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 0.5rem;
+            color: #b3b3b3;
+            font-size: 0.9rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 0.75rem;
+            background-color: #1a1a1a;
+            border: 1px solid #404040;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: #1DB954;
+        }
+        
+        .radio-group {
+            display: flex;
+            gap: 2rem;
+            margin-top: 0.5rem;
+        }
+        
+        .radio-label {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            color: #fff;
+            cursor: pointer;
+        }
+        
+        .radio-label input[type="radio"] {
+            accent-color: #1DB954;
+        }
+        
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: #1DB954;
+            animation: spin 1s linear infinite;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        
+        .results {
+            margin-top: 2rem;
+            padding: 1.5rem;
+            background-color: #1a1a1a;
+            border-radius: 4px;
+        }
+        
+        .track-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+        
+        .track-list li {
+            padding: 0.75rem 0;
+            border-bottom: 1px solid #282828;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .track-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .track-info {
+            flex: 1;
+        }
+        
+        .track-name {
+            color: #fff;
+            font-weight: 500;
+        }
+        
+        .track-artist {
+            color: #b3b3b3;
+            font-size: 0.875rem;
+        }
+        
+        .track-date {
+            color: #b3b3b3;
+            font-size: 0.875rem;
+        }
+        
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+        
+        .stat {
+            text-align: center;
+            background-color: #191414;
+            padding: 1rem;
+            border-radius: 4px;
+        }
+        
+        .stat-number {
+            font-size: 2rem;
+            font-weight: bold;
+            color: #1DB954;
+            margin-bottom: 0.25rem;
+        }
+        
+        .stat-label {
+            color: #b3b3b3;
+            font-size: 0.875rem;
+        }
+        
+        .duplicate-list {
+            list-style: none;
+            margin-top: 1rem;
+        }
+        
+        .duplicate-list li {
+            padding: 1rem 0;
+            border-bottom: 1px solid #282828;
+        }
+        
+        .duplicate-list li:last-child {
+            border-bottom: none;
+        }
+        
+        .duplicate-info {
+            flex: 1;
+        }
+        
+        .duplicate-count {
+            color: #1DB954;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+        
+        .track-albums {
+            color: #b3b3b3;
+            font-size: 0.875rem;
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar">
+        <h1><a href="{{ url_for('index') }}" style="color: #1DB954; text-decoration: none;">Playlist Manager</a></h1>
+        <div class="user-info">
+            {% if user %}
+                <span>{{ user.display_name or user.email }}</span>
+                <a href="{{ url_for('logout') }}" class="btn btn-secondary btn-small">Logout</a>
+            {% endif %}
+        </div>
+    </nav>
+    
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+    
+    <footer style="background-color: #0a0a0a; padding: 2rem; border-top: 1px solid #282828; text-align: center; color: #b3b3b3; margin-top: auto;">
+        <div style="max-width: 1200px; margin: 0 auto;">
+            <p style="margin-bottom: 1rem; font-size: 0.75rem;">
+                This application uses the Spotify Web API but is not endorsed, certified or otherwise approved in any way by Spotify. 
+                Spotify is the registered trade mark of the Spotify Group.
+            </p>
+            <div style="display: flex; justify-content: center; align-items: center; gap: 2rem; flex-wrap: wrap;">
+                <div style="display: flex; align-items: center; gap: 0.5rem;">
+                    <i class="fa-brands fa-spotify" style="color: #1DB954; font-size: 1.5rem;"></i>
+                    <span style="font-size: 0.75rem;">Powered by Spotify Web API</span>
+                </div>
+                <a href="/privacy" style="color: #b3b3b3; text-decoration: none; font-size: 0.75rem;">Privacy Policy</a>
+                <a href="/terms" style="color: #b3b3b3; text-decoration: none; font-size: 0.75rem;">Terms of Service</a>
+            </div>
+        </div>
+    </footer>
+    
+    <script>
+        // Add any global JavaScript here
+    </script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

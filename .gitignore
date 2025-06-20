@@ -1,0 +1,49 @@
+# Python-generated files
+__pycache__/
+*.py[oc]
+build/
+dist/
+wheels/
+*.egg-info
+
+# Virtual environments
+.venv
+venv/
+env/
+
+# Testing and coverage
+.pytest_cache/
+.coverage
+coverage.xml
+.ruff_cache/
+
+# Logs
+*.log
+
+# Sensitive and system files
+.env
+.DS_Store
+flask_session/
+.cache
+.claude/
+
+# Database files
+*.sqlite
+*.db
+
+# Editor files
+*.swp
+*.swo
+.vscode/
+
+# Node modules (if frontend tooling added)
+node_modules/
+
+# Spotify token cache files
+tokens.json
+cache*.json
+
+# Development documentation
+api-rate-limits-and-usage-guidelines.md
+CLAUDE.md
+DEPLOYMENT.md

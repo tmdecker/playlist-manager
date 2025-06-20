@@ -1,0 +1,304 @@
+{% extends "base.html" %}
+
+{% block title %}Remove Duplicates - Spotify Tools{% endblock %}
+
+{% block content %}
+<a href="{{ url_for('index') }}" class="back-button">
+    <span class="material-symbols-outlined">chevron_backward</span>
+    Back to all tools
+</a>
+
+<div class="card">
+    <h2 style="margin-bottom: 1rem;">Remove Duplicate Tracks</h2>
+    <p style="color: #b3b3b3; margin-bottom: 1rem;">
+        Duplicates are identified by track title and all artists, 
+        so the same song from different albums (EP vs full album) will be detected. The first occurrence of each track will be re-added at its original position. <strong>WARNING:</strong> This will change the "date added" timestamp of this track in your playlist.
+    </p>
+    
+    <form id="removeDuplicatesForm">
+        <div class="form-group">
+            <label>Select Input Method:</label>
+            <div class="radio-group" style="margin-bottom: 1rem;">
+                <label class="radio-label">
+                    <input type="radio" name="input_method" value="manual" checked>
+                    Enter playlist URL manually
+                </label>
+                <label class="radio-label">
+                    <input type="radio" name="input_method" value="dropdown">
+                    Choose from my playlists
+                </label>
+            </div>
+        </div>
+        
+        <div class="form-group" id="playlistDropdownGroup" style="display: none;">
+            <label for="playlist">Select Playlist:</label>
+            <select id="playlist" name="playlist_id" class="form-control">
+                <option value="">Loading playlists...</option>
+            </select>
+        </div>
+        
+        <div class="form-group" id="playlistManualGroup">
+            <label for="playlistLink">Playlist URL:</label>
+            <input type="text" id="playlistLink" name="playlist_link" class="form-control" 
+                   placeholder="https://open.spotify.com/playlist/...">
+            <small style="color: #b3b3b3; display: block; margin-top: 0.25rem;">
+                Only accepts full Spotify playlist URLs
+            </small>
+        </div>
+        
+        <button type="submit" class="btn" id="removeDuplicatesButton">
+            Remove Duplicates
+        </button>
+    </form>
+</div>
+
+<div id="results" style="display: none;">
+    <div class="card">
+        <div id="resultsContent"></div>
+    </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script>
+// Validate playlist link format (only accepts URLs)
+function validatePlaylistLink(link) {
+    const trimmedLink = link.trim();
+    
+    // Check for empty input
+    if (!trimmedLink) {
+        return { valid: false, error: 'Please enter a Spotify playlist URL' };
+    }
+    
+    // Only accept full URL format: https://open.spotify.com/playlist/[ID]
+    const webUrlPattern = /^https:\/\/open\.spotify\.com\/playlist\/[a-zA-Z0-9]+/;
+    
+    if (webUrlPattern.test(trimmedLink)) {
+        return { valid: true };
+    }
+    
+    // Provide helpful error messages
+    if (trimmedLink.includes('spotify:')) {
+        return { valid: false, error: 'Spotify URIs are not supported. Please use the full Spotify URL instead.' };
+    }
+    
+    if (trimmedLink.match(/^[a-zA-Z0-9]{22}$/)) {
+        return { valid: false, error: 'Direct playlist IDs are not supported. Please use the full Spotify URL instead.' };
+    }
+    
+    if (trimmedLink.includes('spotify.com') && !trimmedLink.includes('/playlist/')) {
+        return { valid: false, error: 'This appears to be a Spotify link, but not a playlist link. Please use a playlist URL.' };
+    }
+    
+    return { 
+        valid: false, 
+        error: 'Invalid format. Please enter a valid Spotify playlist URL (e.g., https://open.spotify.com/playlist/...)' 
+    };
+}
+
+// Store for playlist snapshot_ids
+const playlistSnapshots = {};
+
+// Toggle between dropdown and manual input
+document.querySelectorAll('input[name="input_method"]').forEach(radio => {
+    radio.addEventListener('change', async (e) => {
+        const dropdownGroup = document.getElementById('playlistDropdownGroup');
+        const manualGroup = document.getElementById('playlistManualGroup');
+        const playlistSelect = document.getElementById('playlist');
+        
+        if (e.target.value === 'dropdown') {
+            dropdownGroup.style.display = 'block';
+            manualGroup.style.display = 'none';
+            document.getElementById('playlist').required = true;
+            document.getElementById('playlistLink').required = false;
+            
+            // Load playlists if not already loaded
+            if (playlistSelect.options.length === 1 && playlistSelect.options[0].text === 'Loading playlists...') {
+                try {
+                    // Show animated loading in dropdown
+                    playlistSelect.disabled = true;
+                    
+                    // Create animated loading text
+                    let loadingDots = 0;
+                    const loadingInterval = setInterval(() => {
+                        loadingDots = (loadingDots + 1) % 4;
+                        const dots = '.'.repeat(loadingDots);
+                        playlistSelect.options[0].textContent = `Loading playlists${dots}`;
+                    }, 500);
+                    
+                    const response = await fetch('/api/playlists');
+                    const data = await response.json();
+                    
+                    // Clear loading animation
+                    clearInterval(loadingInterval);
+                    
+                    if (response.ok && data.playlists) {
+                        // Clear loading option
+                        playlistSelect.innerHTML = '<option value="">Choose a playlist...</option>';
+                        
+                        // Add playlists and store snapshot_ids
+                        data.playlists.forEach(playlist => {
+                            const option = document.createElement('option');
+                            option.value = playlist.id;
+                            option.textContent = `${playlist.name} (${playlist.tracks.total} tracks)`;
+                            playlistSelect.appendChild(option);
+                            
+                            // Store snapshot_id for this playlist
+                            if (playlist.snapshot_id) {
+                                playlistSnapshots[playlist.id] = playlist.snapshot_id;
+                            }
+                        });
+                    } else {
+                        const isOffline = data.offline || false;
+                        playlistSelect.innerHTML = `<option value="">${isOffline ? '🔌' : '❌'} ${data.error || 'Error loading playlists'}</option>`;
+                    }
+                } catch (error) {
+                    playlistSelect.innerHTML = '<option value="">🔌 Unable to connect to Spotify</option>';
+                } finally {
+                    // Re-enable dropdown
+                    playlistSelect.disabled = false;
+                }
+            }
+        } else {
+            dropdownGroup.style.display = 'none';
+            manualGroup.style.display = 'block';
+            document.getElementById('playlist').required = false;
+            document.getElementById('playlistLink').required = true;
+        }
+    });
+});
+
+document.getElementById('removeDuplicatesForm').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    
+    const button = document.getElementById('removeDuplicatesButton');
+    const resultsDiv = document.getElementById('results');
+    const resultsContent = document.getElementById('resultsContent');
+    
+    const inputMethod = document.querySelector('input[name="input_method"]:checked').value;
+    let playlistId;
+    let snapshotId = null;
+    
+    if (inputMethod === 'dropdown') {
+        playlistId = document.getElementById('playlist').value;
+        if (!playlistId) {
+            alert('Please select a playlist');
+            return;
+        }
+        // Get snapshot_id for this playlist if available
+        snapshotId = playlistSnapshots[playlistId] || null;
+    } else {
+        playlistId = document.getElementById('playlistLink').value.trim();
+        const validation = validatePlaylistLink(playlistId);
+        if (!validation.valid) {
+            alert(validation.error);
+            return;
+        }
+    }
+    
+    // Show loading state
+    button.disabled = true;
+    button.innerHTML = '<span class="loading"></span> Removing duplicates...';
+    resultsDiv.style.display = 'none';
+    
+    try {
+        const response = await fetch('/api/remove-duplicates', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({
+                playlist_id: playlistId,
+                snapshot_id: snapshotId
+            })
+        });
+        
+        const data = await response.json();
+        
+        if (response.ok) {
+            // Show success message
+            let duplicatesHtml = '';
+            if (data.duplicate_groups && data.duplicate_groups.length > 0) {
+                duplicatesHtml = `
+                    <h3 style="margin-top: 1.5rem; margin-bottom: 1rem;">
+                        Duplicates removed:
+                    </h3>
+                    <ul class="duplicate-list">
+                        ${data.duplicate_groups.map((dup, index) => `
+                            <li>
+                                <div class="duplicate-info">
+                                    <div class="track-name">${index + 1}. ${dup.track_name}</div>
+                                    <div class="track-artist">${dup.all_artists.join(', ')}</div>
+                                    <div class="track-albums">Albums: ${[...new Set(dup.albums)].join(', ')}</div>
+                                    <div class="duplicate-count">${dup.count} copies found</div>
+                                </div>
+                            </li>
+                        `).join('')}
+                    </ul>
+                `;
+            }
+            
+            resultsContent.innerHTML = `
+                <div class="alert alert-success">
+                    ✓ Successfully processed "${data.playlist_name}"!
+                </div>
+                <div class="stats-grid">
+                    <div class="stat">
+                        <div class="stat-number">${data.total_tracks}</div>
+                        <div class="stat-label">Total tracks</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">${data.unique_tracks}</div>
+                        <div class="stat-label">Unique tracks</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">${data.duplicates_found}</div>
+                        <div class="stat-label">Duplicate groups</div>
+                    </div>
+                    <div class="stat">
+                        <div class="stat-number">${data.tracks_removed}</div>
+                        <div class="stat-label">Tracks removed</div>
+                    </div>
+                </div>
+                ${duplicatesHtml}
+            `;
+            resultsDiv.style.display = 'block';
+        } else if (response.status === 409 && data.conflict) {
+            // Handle conflict - playlist was modified
+            resultsContent.innerHTML = `
+                <div class="alert alert-warning">
+                    ⚠️ ${data.error}
+                    <div style="margin-top: 1rem;">
+                        <button class="btn" onclick="window.location.reload()">
+                            Refresh Page
+                        </button>
+                    </div>
+                </div>
+            `;
+            resultsDiv.style.display = 'block';
+        } else {
+            // Show error message
+            const isOffline = data.offline || false;
+            resultsContent.innerHTML = `
+                <div class="alert alert-error">
+                    ${isOffline ? '🔌 ' : ''}Error: ${data.error}
+                    ${isOffline ? '<br><small>Spotify services appear to be unavailable. Please check your connection and try again.</small>' : ''}
+                </div>
+            `;
+            resultsDiv.style.display = 'block';
+        }
+    } catch (error) {
+        resultsContent.innerHTML = `
+            <div class="alert alert-error">
+                Error: ${error.message}
+            </div>
+        `;
+        resultsDiv.style.display = 'block';
+    } finally {
+        // Reset button
+        button.disabled = false;
+        button.innerHTML = 'Remove Duplicates';
+    }
+});
+</script>
+{% endblock %}

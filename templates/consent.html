@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Data Consent - Spotify Tools{% endblock %}
+
+{% block content %}
+<div class="card">
+    <h2 style="margin-bottom: 2rem; color: #1DB954; text-align: center;">
+        <i class="fa-brands fa-spotify" style="margin-right: 0.5rem;"></i>
+        Connect with Spotify
+    </h2>
+    
+    <div style="max-width: 600px; margin: 0 auto;">
+        <p style="color: #b3b3b3; margin-bottom: 2rem; text-align: center; font-size: 1.1rem;">
+            Before connecting your Spotify account, please review what data we'll access and how we'll use it.
+        </p>
+        
+        <div style="background-color: #1a1a1a; padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+            <h3 style="color: #fff; margin-bottom: 1.5rem; display: flex; align-items: center;">
+                <span class="material-symbols-outlined" style="margin-right: 0.5rem; color: #1DB954;">security</span>
+                What We'll Access
+            </h3>
+            
+            <div style="color: #b3b3b3; line-height: 1.6;">
+                <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-check" style="color: #1DB954; margin-right: 1rem; margin-top: 0.2rem; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="color: #fff;">Your Profile Information:</strong> Display name and email for personalization
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-check" style="color: #1DB954; margin-right: 1rem; margin-top: 0.2rem; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="color: #fff;">Your Playlists:</strong> Read your playlists and modify them for sorting and duplicate removal
+                    </div>
+                </div>
+                
+                <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-check" style="color: #1DB954; margin-right: 1rem; margin-top: 0.2rem; flex-shrink: 0;"></i>
+                    <div>
+                        <strong style="color: #fff;">Track Metadata:</strong> Song titles, artists, albums, and release dates for sorting
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background-color: #1a1a1a; padding: 2rem; border-radius: 12px; margin-bottom: 2rem;">
+            <h3 style="color: #fff; margin-bottom: 1.5rem; display: flex; align-items: center;">
+                <span class="material-symbols-outlined" style="margin-right: 0.5rem; color: #1DB954;">shield</span>
+                What We DON'T Do
+            </h3>
+            
+            <div style="color: #b3b3b3; line-height: 1.6;">
+                <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-times" style="color: #e22134; margin-right: 1rem; margin-top: 0.2rem; flex-shrink: 0;"></i>
+                    <div>Store your music data permanently - everything is processed in real-time</div>
+                </div>
+                
+                <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-times" style="color: #e22134; margin-right: 1rem; margin-top: 0.2rem; flex-shrink: 0;"></i>
+                    <div>Download or save copyrighted content to our servers</div>
+                </div>
+                
+                <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-times" style="color: #e22134; margin-right: 1rem; margin-top: 0.2rem; flex-shrink: 0;"></i>
+                    <div>Share your data with third parties or use it for AI training</div>
+                </div>
+                
+                <div style="display: flex; align-items: start; margin-bottom: 1rem;">
+                    <i class="fa-solid fa-times" style="color: #e22134; margin-right: 1rem; margin-top: 0.2rem; flex-shrink: 0;"></i>
+                    <div>Make changes to your account settings or personal information</div>
+                </div>
+            </div>
+        </div>
+        
+        <div style="background-color: #2a2a2a; border: 1px solid #404040; padding: 1.5rem; border-radius: 8px; margin-bottom: 2rem;">
+            <div style="display: flex; align-items: start;">
+                <i class="fa-solid fa-info-circle" style="color: #1DB954; margin-right: 1rem; margin-top: 0.2rem; flex-shrink: 0;"></i>
+                <div style="color: #b3b3b3; font-size: 0.9rem; line-height: 1.5;">
+                    <strong style="color: #fff;">Your Control:</strong> You can revoke access at any time through your 
+                    <a href="https://www.spotify.com/account/apps/" target="_blank" style="color: #1DB954;">Spotify account settings</a>. 
+                    We don't store tokens after you log out.
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-bottom: 2rem;">
+            <label style="display: flex; align-items: start; color: #b3b3b3; cursor: pointer; line-height: 1.5;">
+                <input type="checkbox" id="consent-checkbox" style="margin-right: 1rem; margin-top: 0.2rem; accent-color: #1DB954; transform: scale(1.2);" required>
+                <span style="font-size: 0.9rem;">
+                    I have read and agree to the <a href="/terms" target="_blank" style="color: #1DB954;">Terms of Service</a> 
+                    and <a href="/privacy" target="_blank" style="color: #1DB954;">Privacy Policy</a>. 
+                    I consent to Spotify Tools accessing my Spotify data as described above for the purpose of playlist management.
+                </span>
+            </label>
+        </div>
+        
+        <div style="text-align: center;">
+            <button id="continue-btn" class="btn" style="opacity: 0.5; cursor: not-allowed; margin-right: 1rem;" disabled>
+                <i class="fa-brands fa-spotify" style="margin-right: 0.5rem;"></i>
+                Continue to Spotify
+            </button>
+            <a href="{{ url_for('index') }}" class="btn btn-secondary">
+                Cancel
+            </a>
+        </div>
+    </div>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const checkbox = document.getElementById('consent-checkbox');
+    const continueBtn = document.getElementById('continue-btn');
+    
+    checkbox.addEventListener('change', function() {
+        if (this.checked) {
+            continueBtn.style.opacity = '1';
+            continueBtn.style.cursor = 'pointer';
+            continueBtn.disabled = false;
+        } else {
+            continueBtn.style.opacity = '0.5';
+            continueBtn.style.cursor = 'not-allowed';
+            continueBtn.disabled = true;
+        }
+    });
+    
+    continueBtn.addEventListener('click', function(e) {
+        if (!checkbox.checked) {
+            e.preventDefault();
+            return;
+        }
+        window.location.href = '/auth';
+    });
+});
+</script>
+{% endblock %}
