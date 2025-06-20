@@ -46,4 +46,3 @@ cache*.json
 # Development documentation
 api-rate-limits-and-usage-guidelines.md
 CLAUDE.md
-DEPLOYMENT.md
