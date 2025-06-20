@@ -52,6 +52,7 @@ class RedisOAuthStateStore(OAuthStateStore):
         """Store an OAuth state with TTL (default 5 minutes)."""
         try:
             key = f"{self.prefix}{state}"
+            logger.info(f"Redis setex: {key}")
             self.redis.setex(key, ttl, "1" if value else "0")
         except Exception as e:
             logger.error(f"Redis setex failed: {e}")
@@ -146,7 +147,14 @@ def create_oauth_state_store() -> OAuthStateStore:
             client = redis.from_url(redis_url, decode_responses=True)
             # Test connection
             client.ping()
-            logger.info("Using Redis for OAuth state storage")
+            # Test a real operation to verify Redis actually works
+            test_key = "test_connection"
+            client.set(test_key, "test_value", ex=10)
+            result = client.get(test_key)
+            client.delete(test_key)
+            if result != "test_value":
+                raise Exception("Redis test operation failed")
+            logger.info("Using Redis for OAuth state storage - connection verified")
             return RedisOAuthStateStore(client)
         except ImportError:
             logger.warning("Redis package not installed. Install with: pip install redis")
