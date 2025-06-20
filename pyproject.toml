@@ -4,6 +4,7 @@ version = "0.1.0"
 description = "A modern web application for managing and organizing Spotify playlists with powerful sorting and duplicate removal capabilities."
 readme = "README.md"
 requires-python = ">=3.12"
+package-mode = false
 dependencies = [
     "spotipy>=2.25.1",
     "python-dotenv>=1.0.0",
