@@ -26,6 +26,7 @@ coverage.xml
 flask_session/
 .cache
 .claude/
+render.yaml
 
 # Database files
 *.sqlite
