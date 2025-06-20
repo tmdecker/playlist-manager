@@ -2,6 +2,8 @@
 
 A modern web application for managing and organizing Spotify playlists with powerful sorting and duplicate removal capabilities.
 
+Functional Web App is available here: [https://playlist-manager-037p.onrender.com](https://playlist-manager-037p.onrender.com)
+
 ## 🎵 Features
 
 ### Core Functionality
