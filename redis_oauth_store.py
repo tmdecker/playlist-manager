@@ -59,7 +59,7 @@ class RedisOAuthStateStore(OAuthStateStore):
         result = self.redis.get(key)
         if result is None:
             return None
-        return result.decode() == "1"
+        return result == "1"
 
     def delete_state(self, state: str) -> None:
         """Delete an OAuth state."""
