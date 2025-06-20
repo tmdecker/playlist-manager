@@ -1,5 +1,5 @@
 [project]
-name = "splaylist-manaer"
+name = "playlist-manager"
 version = "0.1.0"
 description = "A modern web application for managing and organizing Spotify playlists with powerful sorting and duplicate removal capabilities."
 readme = "README.md"
