@@ -50,21 +50,33 @@ class RedisOAuthStateStore(OAuthStateStore):
 
     def set_state(self, state: str, value: bool = True, ttl: int = 300) -> None:
         """Store an OAuth state with TTL (default 5 minutes)."""
-        key = f"{self.prefix}{state}"
-        self.redis.setex(key, ttl, "1" if value else "0")
+        try:
+            key = f"{self.prefix}{state}"
+            self.redis.setex(key, ttl, "1" if value else "0")
+        except Exception as e:
+            logger.error(f"Redis setex failed: {e}")
+            raise
 
     def get_state(self, state: str) -> bool | None:
         """Retrieve an OAuth state."""
-        key = f"{self.prefix}{state}"
-        result = self.redis.get(key)
-        if result is None:
-            return None
-        return result == "1"
+        try:
+            key = f"{self.prefix}{state}"
+            result = self.redis.get(key)
+            if result is None:
+                return None
+            return result == "1"
+        except Exception as e:
+            logger.error(f"Redis get failed: {e}")
+            raise
 
     def delete_state(self, state: str) -> None:
         """Delete an OAuth state."""
-        key = f"{self.prefix}{state}"
-        self.redis.delete(key)
+        try:
+            key = f"{self.prefix}{state}"
+            self.redis.delete(key)
+        except Exception as e:
+            logger.error(f"Redis delete failed: {e}")
+            raise
 
     def cleanup(self) -> None:
         """No cleanup needed - Redis handles expiration automatically."""
