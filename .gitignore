@@ -47,3 +47,6 @@ cache*.json
 # Development documentation
 api-rate-limits-and-usage-guidelines.md
 CLAUDE.md
+
+# Obsolete or suspended files
+_old/
