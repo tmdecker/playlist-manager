@@ -16,6 +16,7 @@ from remove_duplicates_from_playlist import remove_duplicates_from_playlist
 from secure_token_storage import create_secure_token_storage
 from sort_playlist_by_release_date import batch_sort_playlist
 from spotify_auth import get_user_playlists
+from spotipy.cache_handler import MemoryCacheHandler
 from spotify_client import create_spotify_client, create_spotify_oauth
 
 # Load environment variables first
@@ -331,16 +332,18 @@ def callback():
 
     try:
         # Exchange code for access token
+        mem_cache = MemoryCacheHandler()
         auth_manager = create_spotify_oauth(
             client_id=SPOTIFY_CLIENT_ID,
             client_secret=SPOTIFY_CLIENT_SECRET,
             redirect_uri=REDIRECT_URI,
             scope=SCOPE,
-            cache_handler=None  # Use cache_handler instead of cache_path for web app
+            cache_handler=mem_cache
         )
 
-        # Get token info - this will return a dictionary
-        token_info = auth_manager.get_access_token(code, as_dict=True, check_cache=False)
+        # Exchange code for token; full token dict is saved to mem_cache
+        auth_manager.get_access_token(code, as_dict=False, check_cache=False)
+        token_info = mem_cache.get_cached_token()
 
         if not token_info:
             return render_template('error.html', error='Failed to get access token.')
@@ -547,7 +550,7 @@ def api_remove_duplicates():
             'unique_tracks': stats['unique_tracks'],
             'duplicates_found': stats['duplicates_found'],
             'tracks_removed': stats['tracks_removed'],
-            'duplicate_groups': stats['duplicate_groups'][:10]  # Limit to first 10 for display
+            'duplicate_groups': stats['duplicate_groups']  # Return all duplicate groups
         }
         
         # Add removal strategy breakdown if available

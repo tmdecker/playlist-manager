@@ -224,17 +224,15 @@ document.getElementById('removeDuplicatesForm').addEventListener('submit', async
                         Duplicates removed:
                     </h3>
                     <ul class="duplicate-list">
-                        ${data.duplicate_groups.map((dup, index) => `
-                            <li>
-                                <div class="duplicate-info">
-                                    <div class="track-name">${index + 1}. ${dup.track_name}</div>
-                                    <div class="track-artist">${dup.all_artists.join(', ')}</div>
-                                    <div class="track-albums">Albums: ${[...new Set(dup.albums)].join(', ')}</div>
-                                    <div class="duplicate-count">${dup.count} copies found</div>
-                                </div>
-                            </li>
-                        `).join('')}
+                        <!-- Content will be populated by pagination functions -->
                     </ul>
+                    <div id="paginationControls" style="display: none; margin-top: 1.5rem; text-align: center;">
+                        <div style="display: flex; justify-content: center; align-items: center; gap: 1rem; flex-wrap: wrap;">
+                            <button id="prevBtn" class="btn btn-secondary btn-small" disabled>Previous</button>
+                            <span id="pageInfo" style="color: #b3b3b3; font-size: 0.875rem;"></span>
+                            <button id="nextBtn" class="btn btn-secondary btn-small">Next</button>
+                        </div>
+                    </div>
                 `;
             }
             
@@ -263,6 +261,11 @@ document.getElementById('removeDuplicatesForm').addEventListener('submit', async
                 ${duplicatesHtml}
             `;
             resultsDiv.style.display = 'block';
+            
+            // Initialize pagination if there are duplicate groups
+            if (data.duplicate_groups && data.duplicate_groups.length > 0) {
+                initializePagination(data.duplicate_groups);
+            }
         } else if (response.status === 409 && data.conflict) {
             // Handle conflict - playlist was modified
             resultsContent.innerHTML = `
@@ -300,5 +303,132 @@ document.getElementById('removeDuplicatesForm').addEventListener('submit', async
         button.innerHTML = 'Remove Duplicates';
     }
 });
+
+// Pagination functionality
+let currentPage = 1;
+let allDuplicateGroups = [];
+const ITEMS_PER_PAGE = 10;
+
+function initializePagination(duplicateGroups) {
+    allDuplicateGroups = duplicateGroups;
+    currentPage = 1;
+    
+    // Always render the content first
+    updatePaginationDisplay();
+    
+    // Show pagination controls if there are more than ITEMS_PER_PAGE items
+    const paginationControls = document.getElementById('paginationControls');
+    if (duplicateGroups.length > ITEMS_PER_PAGE) {
+        paginationControls.style.display = 'block';
+        setupPaginationEvents();
+    } else {
+        paginationControls.style.display = 'none';
+    }
+}
+
+function setupPaginationEvents() {
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    
+    // Remove existing event listeners
+    prevBtn.replaceWith(prevBtn.cloneNode(true));
+    nextBtn.replaceWith(nextBtn.cloneNode(true));
+    
+    // Get fresh references and add new event listeners
+    const newPrevBtn = document.getElementById('prevBtn');
+    const newNextBtn = document.getElementById('nextBtn');
+    
+    newPrevBtn.addEventListener('click', () => {
+        if (currentPage > 1) {
+            currentPage--;
+            updatePaginationDisplay();
+        }
+    });
+    
+    newNextBtn.addEventListener('click', () => {
+        const totalPages = Math.ceil(allDuplicateGroups.length / ITEMS_PER_PAGE);
+        if (currentPage < totalPages) {
+            currentPage++;
+            updatePaginationDisplay();
+        }
+    });
+    
+    // Add keyboard navigation
+    document.addEventListener('keydown', handleKeyboardNavigation);
+}
+
+function handleKeyboardNavigation(event) {
+    // Only handle if pagination is visible and no form elements are focused
+    const paginationControls = document.getElementById('paginationControls');
+    if (paginationControls.style.display === 'none' || 
+        document.activeElement.tagName === 'INPUT' || 
+        document.activeElement.tagName === 'SELECT' ||
+        document.activeElement.tagName === 'BUTTON') {
+        return;
+    }
+    
+    const totalPages = Math.ceil(allDuplicateGroups.length / ITEMS_PER_PAGE);
+    
+    if (event.key === 'ArrowLeft' && currentPage > 1) {
+        event.preventDefault();
+        currentPage--;
+        updatePaginationDisplay();
+    } else if (event.key === 'ArrowRight' && currentPage < totalPages) {
+        event.preventDefault();
+        currentPage++;
+        updatePaginationDisplay();
+    }
+}
+
+function updatePaginationDisplay() {
+    const totalPages = Math.ceil(allDuplicateGroups.length / ITEMS_PER_PAGE);
+    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
+    const endIndex = Math.min(startIndex + ITEMS_PER_PAGE, allDuplicateGroups.length);
+    
+    // Update duplicate list display
+    const duplicateList = document.querySelector('.duplicate-list');
+    if (duplicateList) {
+        const currentPageData = allDuplicateGroups.slice(startIndex, endIndex);
+        duplicateList.innerHTML = currentPageData.map((dup, index) => `
+            <li>
+                <div class="duplicate-info">
+                    <div class="track-name">${startIndex + index + 1}. ${dup.track_name}</div>
+                    <div class="track-artist">${dup.all_artists.join(', ')}</div>
+                    <div class="track-albums">Albums: ${[...new Set(dup.albums)].join(', ')}</div>
+                    <div class="duplicate-count">${dup.count} copies found</div>
+                </div>
+            </li>
+        `).join('');
+    }
+    
+    // Update pagination controls
+    const prevBtn = document.getElementById('prevBtn');
+    const nextBtn = document.getElementById('nextBtn');
+    const pageInfo = document.getElementById('pageInfo');
+    
+    if (prevBtn && nextBtn && pageInfo) {
+        prevBtn.disabled = currentPage === 1;
+        nextBtn.disabled = currentPage === totalPages;
+        
+        // Only show page info if there are multiple pages
+        if (totalPages > 1) {
+            pageInfo.textContent = `Showing ${startIndex + 1}-${endIndex} of ${allDuplicateGroups.length} duplicates (Page ${currentPage} of ${totalPages})`;
+        } else {
+            pageInfo.textContent = `Showing all ${allDuplicateGroups.length} duplicates`;
+        }
+        
+        // Add ARIA labels for accessibility
+        prevBtn.setAttribute('aria-label', `Go to page ${currentPage - 1}`);
+        nextBtn.setAttribute('aria-label', `Go to page ${currentPage + 1}`);
+        
+        // Scroll to top of results smoothly only if we're changing pages
+        if (totalPages > 1) {
+            const resultsDiv = document.getElementById('results');
+            if (resultsDiv) {
+                resultsDiv.scrollIntoView({ behavior: 'smooth', block: 'start' });
+            }
+        }
+    }
+}
 </script>
 {% endblock %}
