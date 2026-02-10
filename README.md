@@ -2,14 +2,14 @@
 
 A modern web application for managing and organizing Spotify playlists with powerful sorting and duplicate removal capabilities.
 
-## 🎵 Features
+## Features
 
 ### Core Functionality
 
-- **🔄 Sort by Release Date** - Organize playlists with newest or oldest tracks first
-- **🎯 Remove Duplicates** - Intelligently detect and remove duplicate tracks
-- **🎨 Modern Web Interface** - Clean, responsive design with real-time feedback
-- **🔐 Secure Authentication** - OAuth 2.0 flow with Spotify
+- **Sort by Release Date** - Organize playlists with newest or oldest tracks first
+- **Remove Duplicates** - Intelligently detect and remove duplicate tracks
+- **Modern Web Interface** - Clean, responsive design with real-time feedback
+- **Secure Authentication** - OAuth 2.0 flow with Spotify
 
 ### Advanced Capabilities
 - **Smart Duplicate Detection** - Identifies same songs across different albums (EP vs full album releases)
@@ -17,7 +17,22 @@ A modern web application for managing and organizing Spotify playlists with powe
 - **Graceful Error Handling** - User-friendly messages for all error scenarios
 - **Production-Ready Infrastructure** - Rate limiting, session management, and Redis support
 
-## 🚀 Quick Start
+## Screenshots
+
+<table>
+  <tr>
+    <td align="center"><strong>Main Menu</strong><br><img src="screenshots/main-menu.png" alt="Main Menu" width="280"></td>
+    <td align="center"><strong>Sort Playlist</strong><br><img src="screenshots/sort-playlist.png" alt="Sort Playlist" width="280"></td>
+    <td align="center"><strong>Sort Result</strong><br><img src="screenshots/sort-playlist-done.png" alt="Sort Result" width="280"></td>
+  </tr>
+  <tr>
+    <td align="center"><strong>Remove Duplicates</strong><br><img src="screenshots/remove-duplicates.png" alt="Remove Duplicates" width="280"></td>
+    <td align="center"><strong>Removal Result</strong><br><img src="screenshots/remove-duplicates-done.png" alt="Removal Result" width="280"></td>
+    <td></td>
+  </tr>
+</table>
+
+## Quick Start
 
 ### Prerequisites
 - Python 3.12+
@@ -55,7 +70,7 @@ A modern web application for managing and organizing Spotify playlists with powe
 
 5. **Run the application**
    ```bash
-   python web_app.py
+   uv run python web_app.py
    ```
 
 6. **Open in browser**
@@ -63,7 +78,7 @@ A modern web application for managing and organizing Spotify playlists with powe
    http://localhost:5000
    ```
 
-## 📱 Using the Web Application
+## Using the Web Application
 
 ### Home Page
 - Login with Spotify to access your playlists
@@ -94,7 +109,7 @@ A modern web application for managing and organizing Spotify playlists with powe
 - **Playlist Selection**: Choose from dropdown menu
 - **Playlist IDs**: Direct ID like `37i9dQZF1DXcBWIGoYBM5M`
 
-## 🏗️ Architecture
+## Architecture
 
 ### Key Components
 
@@ -121,7 +136,7 @@ A modern web application for managing and organizing Spotify playlists with powe
 - **Efficient Algorithms** - Batch operations minimize API calls
 - **Session Management** - Redis-backed sessions for scalability
 
-## 🚀 Production Deployment
+## Production Deployment
 
 See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete deployment instructions.
 
@@ -156,15 +171,15 @@ See **[DEPLOYMENT.md](DEPLOYMENT.md)** for complete deployment instructions.
 - **Docker** - Containerization ready
 - **Self-hosted** - With nginx/Redis
 
-## 📊 API Compliance
+## API Compliance
 
 This application follows Spotify's Developer Terms of Service:
-- ✅ Proper rate limiting implementation
-- ✅ Required Spotify branding and attribution
-- ✅ No music content downloading or caching
-- ✅ Privacy policy and terms of service included
-- ✅ User consent for data operations
-- ✅ Descriptive User-Agent headers
+- Proper rate limiting implementation
+- Required Spotify branding and attribution
+- No music content downloading or caching
+- Privacy policy and terms of service included
+- User consent for data operations
+- Descriptive User-Agent headers
 
 ### OAuth Scopes Used
 - `playlist-modify-public` - Modify user's public playlists
@@ -172,7 +187,7 @@ This application follows Spotify's Developer Terms of Service:
 - `playlist-read-private` - Access user's private playlists
 - `user-read-email` - Read user's email for identification
 
-## 🔧 Troubleshooting
+## Troubleshooting
 
 ### Common Issues
 
@@ -192,7 +207,7 @@ This application follows Spotify's Developer Terms of Service:
 - App automatically falls back to in-memory storage
 - Check Redis URL format and credentials
 
-## 🤝 Contributing
+## Contributing
 
 Contributions are welcome! Please:
 1. Fork the repository
@@ -201,7 +216,7 @@ Contributions are welcome! Please:
 4. Add tests for new functionality
 5. Submit a pull request
 
-## 📄 License
+## License
 
 This project is licensed under the MIT License - see the [LICENSE](LICENSE) file for details.
 
@@ -215,10 +230,10 @@ Use of the Spotify Web API requires compliance with [Spotify's Developer Terms o
 - Respect Spotify's rate limits and usage policies
 - Not use this software for any purpose that violates Spotify's terms
 
-## 🙏 Acknowledgments
+## Acknowledgments
 
 Built with:
 - [Spotipy](https://github.com/spotipy-dev/spotipy) - Spotify Web API wrapper
 - [Flask](https://flask.palletsprojects.com/) - Web framework
 - [Redis](https://redis.io/) - Session storage
-- Love for music organization 🎵
+- Love for music organization
